@@ -31,20 +31,15 @@ module.exports = function (grunt) {
 
         // Configuration to be run (and then tested).
         deploy_site: {
-            default_options: {
+            staging: {
                 options: {},
-                files: {
-                    'tmp/default_options': ['test/fixtures/testing', 'test/fixtures/123']
-                }
+                base_path: 'test/fixtures/staging',
+                remote_url: 'test/fixtures/remotes'
             },
-            custom_options: {
-                options: {
-                    separator: ': ',
-                    punctuation: ' !!!'
-                },
-                files: {
-                    'tmp/custom_options': ['test/fixtures/testing', 'test/fixtures/123']
-                }
+            production: {
+                options: {},
+                base_path: 'test/fixtures/production',
+                remote_url: 'test/fixtures/remotes'
             }
         },
 
