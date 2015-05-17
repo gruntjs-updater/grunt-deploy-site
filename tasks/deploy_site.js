@@ -23,7 +23,10 @@ module.exports = function (grunt) {
                 msg = msg.concat(args);
             }
 
+            //print out command if --verbose is supplied
             grunt.verbose.ok(msg.join(' '));
+
+            //execute command
             grunt.util.spawn({
                 cmd: cmd,
                 args: args,
@@ -89,6 +92,7 @@ module.exports = function (grunt) {
             grunt.fail.fatal('Invalid path supplied for `base_path` value!');
         }
 
+        //save the working tree for repo as the base path from the grunt config
         workTree = path.resolve(this.data.base_path);
 
         done = this.async();
@@ -97,8 +101,8 @@ module.exports = function (grunt) {
         return [
             willInitRepo(localRepoPath),
             willSpawn('git', ['config', 'core.worktree', workTree], {cwd: localRepoPath}),
-            willSpawn('git', ['add', '-A'], {cwd: workTree}),
-            willSpawn('git', ['commit', '-m', commit_msg], {cwd: workTree})
+            willSpawn('git', ['add', '-A'], {cwd: localRepoPath}),
+            willSpawn('git', ['commit', '-m', commit_msg], {cwd: localRepoPath})
         ].reduce(function (prev, curFunc) {
             return prev.then(curFunc);
         }, new Q())
@@ -106,7 +110,7 @@ module.exports = function (grunt) {
                 grunt.log.writeln('Successfully deployed ' + this.target);
                 done();
             }, function (err) {
-                grunt.fail.fatal('Failed: ' + err);
+                grunt.fail.fatal(err);
             });
 
     });
