@@ -2,6 +2,7 @@
 'use strict';
 
 var grunt = require('grunt');
+var fs = require('fs-extra');
 
 /*
   ======== A Handy Little Nodeunit Reference ========
@@ -26,9 +27,16 @@ var grunt = require('grunt');
 exports.deploy_site = {
     setUp: function (done) {
         // setup here if necessary
+        fs.removeSync('.staging_site');
+        fs.removeSync('.production_site');
         done();
     },
-    default_options: function (test) {
+    tearDown: function (done) {
+//        fs.removeSync('.staging_site');
+//        fs.removeSync('.production_site');
+        done();
+    },
+    staging: function (test) {
         test.expect(1);
 
         var actual = '',
@@ -37,7 +45,7 @@ exports.deploy_site = {
 
         test.done();
     },
-    custom_options: function (test) {
+    production: function (test) {
         test.expect(1);
 
         var actual = '',
