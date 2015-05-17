@@ -15,16 +15,12 @@ var Q = require('q'),
 module.exports = function (grunt) {
 
     function willSpawn(cmd, args, opts) {
-        return function () {
+        return function (d) {
             var defer = Q.defer(),
                 msg = ['Running', cmd];
 
             if (args) {
                 msg = msg.concat(args);
-            }
-
-            if (opts) {
-                msg = msg.concat(', ', JSON.stringify(opts));
             }
 
             grunt.verbose.ok(msg.join(' '));
@@ -34,11 +30,9 @@ module.exports = function (grunt) {
                 opts: opts
             }, function (error, result, code) {
                 if (code !== 0) {
-                    console.log('failing');
-                    defer.reject(error.stderr);
+                    defer.reject(error);
                 } else {
-                    console.log('winning');
-                    defer.resolve();
+                    defer.resolve(d);
                 }
             });
             return defer.promise;
@@ -46,19 +40,21 @@ module.exports = function (grunt) {
     }
 
     function willInitRepo(repoPath) {
-        return function () {
+        return function (d) {
             var defer = Q.defer();
 
             if (!grunt.file.isDir(repoPath)) {
                 willSpawn('git', ['init', repoPath])()
                     .then(function () {
-                        defer.resolve();
+                        defer.resolve(d);
                     }, function (err) {
                         defer.reject(err);
                     });
             } else {
                 //repo is already initialized
-                process.nextTick(defer.resolve);
+                process.nextTick(function () {
+                    defer.resolve(d);
+                });
             }
 
             return defer.promise;
@@ -104,7 +100,6 @@ module.exports = function (grunt) {
             willSpawn('git', ['add', '-A'], {cwd: workTree}),
             willSpawn('git', ['commit', '-m', commit_msg], {cwd: workTree})
         ].reduce(function (prev, curFunc) {
-            console.log('In reduce');
             return prev.then(curFunc);
         }, new Q())
             .then(function () {
