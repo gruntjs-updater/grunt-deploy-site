@@ -102,7 +102,8 @@ module.exports = function (grunt) {
         ].reduce(function (prev, curFunc) {
             return prev.then(curFunc);
         }, new Q())
-            .then(function () {
+            .then(function (d) {
+                console.log('asdf');
                 grunt.log.writeln('Successfully deployed ' + this.target);
                 done();
             }, function (err) {
