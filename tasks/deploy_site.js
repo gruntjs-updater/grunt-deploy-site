@@ -14,7 +14,7 @@ var Q = require('q'),
 
 module.exports = function (grunt) {
 
-    function willSpawn(cmd, args, opts) {
+    function willSpawn(cmd, args, opts, cmd_msg) {
         return function (d) {
             var defer = Q.defer(),
                 msg = ['Running', cmd];
@@ -25,6 +25,10 @@ module.exports = function (grunt) {
 
             //print out command if --verbose is supplied
             grunt.verbose.ok(msg.join(' '));
+
+            if (cmd_msg) {
+                grunt.log.writeln(cmd_msg);
+            }
 
             //execute command
             grunt.util.spawn({
@@ -44,9 +48,15 @@ module.exports = function (grunt) {
 
     function willInitRepo(repoPath) {
         return function (d) {
-            var defer = Q.defer();
+            var defer = Q.defer(),
+                relRepoPath,
+                msg;
 
             if (!grunt.file.isDir(repoPath)) {
+                relRepoPath = path.basename(repoPath);
+                msg = "Initializing repository at ".cyan.bold + relRepoPath.magenta;
+
+                grunt.log.writeln(msg);
                 willSpawn('git', ['init', repoPath])()
                     .then(function () {
                         defer.resolve(d);
@@ -109,18 +119,30 @@ module.exports = function (grunt) {
         //execute commands
         return [
             willInitRepo(localRepoPath),
-            willSpawn('git', ['config', 'core.worktree', workTree], {cwd: localRepoPath}),
-            willSpawn('git', ['add', '-A'], {cwd: localRepoPath}),
-            willSpawn('git', ['commit', '-m', options.commit_msg], {cwd: localRepoPath}),
-            willSpawn('git', ['push', '--force', '--quiet', remoteRepoPath, options.branch], {cwd: localRepoPath})
+            willSpawn('git',
+                      ['config', 'core.worktree', workTree],
+                      {cwd: localRepoPath}),
+            willSpawn('git',
+                      ['add', '-A'],
+                      {cwd: localRepoPath},
+                      'Adding files to deployment repo '.white + '...'.cyan),
+            willSpawn('git',
+                      ['commit', '-m', options.commit_msg],
+                      {cwd: localRepoPath},
+                      'Committing changes '.white + '...'.cyan),
+            willSpawn('git',
+                      ['push', '--force', '--quiet', remoteRepoPath, options.branch],
+                      {cwd: localRepoPath},
+                      'Pushing changes to the remote deployment repository'.white + '...'.cyan)
         ].reduce(function (prev, curFunc) {
             return prev.then(curFunc);
         }, new Q())
             .then(function (d) {
-                grunt.log.writeln('Successfully deployed ' + this.target);
+                var success_msg = 'Successfully deployed ' + this.target + ' site';
+                grunt.log.writeln(success_msg.white.bold);
                 done();
             }.bind(this), function (err) {
-                grunt.fail.fatal('Error while deploying: ' + err);
+                grunt.fail.fatal(err);
             }).done();
 
     });
