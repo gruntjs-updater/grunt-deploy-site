@@ -70,7 +70,8 @@ module.exports = function (grunt) {
     grunt.registerMultiTask('deploy_site', 'Grunt plugin that leverages git to deploy a web site', function () {
         // Merge task-specific and/or target-specific options with these defaults.
         var options = this.options({
-                branch: 'master'
+                branch: 'master',
+                commit_msg: 'deployment'
             }),
             config = [this.name, this.target].join('.'),
             requiredParams = [
@@ -78,7 +79,6 @@ module.exports = function (grunt) {
                 'remote_url'
             ],
             localRepoPath = path.resolve('.' + this.target + '_site'),
-            commit_msg = 'default message',
             remoteRepoPath,
             workTree,
             done;
@@ -111,7 +111,7 @@ module.exports = function (grunt) {
             willInitRepo(localRepoPath),
             willSpawn('git', ['config', 'core.worktree', workTree], {cwd: localRepoPath}),
             willSpawn('git', ['add', '-A'], {cwd: localRepoPath}),
-            willSpawn('git', ['commit', '-m', commit_msg], {cwd: localRepoPath}),
+            willSpawn('git', ['commit', '-m', options.commit_msg], {cwd: localRepoPath}),
             willSpawn('git', ['push', '--force', '--quiet', remoteRepoPath, options.branch], {cwd: localRepoPath})
         ].reduce(function (prev, curFunc) {
             return prev.then(curFunc);
