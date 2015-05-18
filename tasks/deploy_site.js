@@ -79,6 +79,7 @@ module.exports = function (grunt) {
             ],
             localRepoPath = path.resolve('.' + this.target + '_site'),
             commit_msg = 'default message',
+            remoteRepoPath,
             workTree,
             done;
 
@@ -95,6 +96,14 @@ module.exports = function (grunt) {
         //save the working tree for repo as the base path from the grunt config
         workTree = path.resolve(this.data.base_path);
 
+        //set remote git url variable
+        if (grunt.file.exists(path.resolve(this.data.base_path))) {
+            //must be a local reference so resolve to absolute path
+            remoteRepoPath = path.resolve(this.data.remote_url);
+        } else {
+            remoteRepoPath = this.data.remote_url;
+        }
+
         done = this.async();
 
         //execute commands
@@ -102,16 +111,17 @@ module.exports = function (grunt) {
             willInitRepo(localRepoPath),
             willSpawn('git', ['config', 'core.worktree', workTree], {cwd: localRepoPath}),
             willSpawn('git', ['add', '-A'], {cwd: localRepoPath}),
-            willSpawn('git', ['commit', '-m', commit_msg], {cwd: localRepoPath})
+            willSpawn('git', ['commit', '-m', commit_msg], {cwd: localRepoPath}),
+            willSpawn('git', ['push', '--force', '--quiet', remoteRepoPath, options.branch], {cwd: localRepoPath})
         ].reduce(function (prev, curFunc) {
             return prev.then(curFunc);
         }, new Q())
             .then(function (d) {
                 grunt.log.writeln('Successfully deployed ' + this.target);
                 done();
-            }, function (err) {
-                grunt.fail.fatal(err);
-            });
+            }.bind(this), function (err) {
+                grunt.fail.fatal('Error while deploying: ' + err);
+            }).done();
 
     });
 
