@@ -3,6 +3,7 @@
 
 var grunt = require('grunt');
 var fs = require('fs-extra');
+var path = require('path');
 
 /*
   ======== A Handy Little Nodeunit Reference ========
@@ -27,30 +28,31 @@ var fs = require('fs-extra');
 exports.deploy_site = {
     setUp: function (done) {
         // setup here if necessary
-        fs.removeSync('.staging_site');
-        fs.removeSync('.production_site');
         done();
     },
     tearDown: function (done) {
-//        fs.removeSync('.staging_site');
-//        fs.removeSync('.production_site');
         done();
     },
     staging: function (test) {
-        test.expect(1);
 
-        var actual = '',
-            expected = '';
-        test.equal(actual, expected, 'should describe what the default behavior is.');
+        test.expect(2);
+
+        test.equal(grunt.file.exists('.staging_site'),
+                   true, 'the local staging repo should be created.');
+
+        test.equal(grunt.file.exists('test/sites/staging/staging.html'),
+                   true, 'the staging.html file should be pushed to the remote.');
 
         test.done();
     },
     production: function (test) {
-        test.expect(1);
+        test.expect(2);
 
-        var actual = '',
-            expected = '';
-        test.equal(actual, expected, 'should describe what the default behavior is.');
+        test.equal(grunt.file.exists('.production_site'),
+                   true, 'the local production repo should be created.');
+
+        test.equal(grunt.file.exists('test/sites/production/index.html'),
+                   true, 'the production.html file should be pushed to the remote.');
 
         test.done();
     }
