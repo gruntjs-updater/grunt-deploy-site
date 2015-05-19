@@ -37,17 +37,17 @@ grunt.initConfig({
 
 ### Options
 
-#### options.separator
+#### options.branch
 Type: `String`
-Default value: `',  '`
+Default value: `master`
 
-A string value that is used to do something with whatever.
+Remote branch to deploy
 
-#### options.punctuation
+#### options.commit_msg
 Type: `String`
-Default value: `'.'`
+Default value: `deployment`
 
-A string value that is used to do something else with whatever else.
+A commit message to include for the deployment
 
 ### Usage Examples
 
@@ -56,12 +56,16 @@ In this example, the default options are used to do something with whatever. So 
 
 ```js
 grunt.initConfig({
-  deploy_site: {
-    options: {},
-    files: {
-      'dest/default_options': ['src/testing', 'src/123'],
-    },
-  },
+   deploy_site: {
+        staging: {
+            options: {
+                branch: 'gh-pages',
+                commit_msg: 'Deployment commit'
+            },
+            base_path: 'dist',
+            remote_url: 'test/fixtures/remotes/staging'
+        },
+    }
 });
 ```
 
