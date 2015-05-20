@@ -131,7 +131,7 @@ module.exports = function (grunt) {
                       {cwd: localRepoPath},
                       'Committing changes '.white + '...'.cyan),
             willSpawn('git',
-                      ['push', '--force', '--quiet', remoteRepoPath, options.branch],
+                      ['push', '--force', '--quiet', remoteRepoPath, 'master:' + options.branch],
                       {cwd: localRepoPath},
                       'Pushing changes to the remote deployment repository'.white + '...'.cyan)
         ].reduce(function (prev, curFunc) {
