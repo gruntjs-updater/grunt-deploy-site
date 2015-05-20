@@ -107,7 +107,7 @@ module.exports = function (grunt) {
         workTree = path.resolve(this.data.base_path);
 
         //set remote git url variable
-        if (grunt.file.exists(path.resolve(this.data.base_path))) {
+        if (grunt.file.exists(path.resolve(this.data.remote_url))) {
             //must be a local reference so resolve to absolute path
             remoteRepoPath = path.resolve(this.data.remote_url);
         } else {
