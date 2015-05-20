@@ -52,39 +52,23 @@ A commit message to include for the deployment
 ### Usage Examples
 
 #### Default Options
-In this example, the default options are used to do something with whatever. So if the `testing` file has the content `Testing` and the `123` file had the content `1 2 3`, the generated result would be `Testing, 1 2 3.`
+In this example, the contents of the `dist` folder is deployed to the `gh-pages` branch of the remote repo `https://github.com/LonnyGomes/grunt-deploy-site.git`. A local deploy_site reposiotry is created under .production_site
 
 ```js
 grunt.initConfig({
    deploy_site: {
-        staging: {
+        produciton: {
             options: {
                 branch: 'gh-pages',
-                commit_msg: 'Deployment commit'
+                commit_msg: 'deployment '
             },
             base_path: 'dist',
-            remote_url: 'test/fixtures/remotes/staging'
-        },
+            remote_url: 'https://github.com/LonnyGomes/grunt-deploy-site.git'
+        }
     }
 });
 ```
 
-#### Custom Options
-In this example, custom options are used to do something else with whatever else. So if the `testing` file has the content `Testing` and the `123` file had the content `1 2 3`, the generated result in this case would be `Testing: 1 2 3 !!!`
-
-```js
-grunt.initConfig({
-  deploy_site: {
-    options: {
-      separator: ': ',
-      punctuation: ' !!!',
-    },
-    files: {
-      'dest/default_options': ['src/testing', 'src/123'],
-    },
-  },
-});
-```
 
 ## Contributing
 In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).
