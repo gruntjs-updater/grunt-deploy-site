@@ -49,10 +49,16 @@ Default value: `deployment`
 
 A commit message to include for the deployment
 
+#### options.deploy_url
+Type: `String`
+Default value: `N/A`
+
+If set, the supplied URL will open in a browser window
+
 ### Usage Examples
 
 #### Default Options
-In this example, the contents of the `dist` folder is deployed to the `gh-pages` branch of the remote repo `https://github.com/LonnyGomes/grunt-deploy-site.git`. A local deploy_site reposiotry is created under .production_site
+In this example, the contents of the `dist` folder is deployed to the `gh-pages` branch of the remote repo `https://github.com/LonnyGomes/grunt-deploy-site.git`. A local reposiotry is created with in a folder named .production_site and after the site is deployed the URL will be opened up in a browser.
 
 ```js
 grunt.initConfig({
@@ -60,7 +66,8 @@ grunt.initConfig({
         produciton: {
             options: {
                 branch: 'gh-pages',
-                commit_msg: 'deployment '
+                commit_msg: 'deployment',
+                deploy_url: 'http://grunt-deploy-site.github.io'
             },
             base_path: 'dist',
             remote_url: 'https://github.com/LonnyGomes/grunt-deploy-site.git'
