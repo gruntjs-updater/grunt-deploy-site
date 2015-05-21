@@ -61,7 +61,9 @@ module.exports = function (grunt) {
         // Configuration to be run (and then tested).
         deploy_site: {
             staging: {
-                options: {},
+                options: {
+                    deploy_url: 'http://google.com'
+                },
                 base_path: 'test/fixtures/staging',
                 remote_url: 'test/fixtures/remotes/staging'
             },

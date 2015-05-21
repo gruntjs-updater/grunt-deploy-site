@@ -10,7 +10,8 @@
 'use strict';
 
 var Q = require('q'),
-    path = require('path');
+    path = require('path'),
+    open = require('open');
 
 module.exports = function (grunt) {
 
@@ -69,6 +70,22 @@ module.exports = function (grunt) {
                     defer.resolve(d);
                 });
             }
+
+            return defer.promise;
+        };
+    }
+
+    function openURL(opts) {
+        return function () {
+            var defer = Q.defer();
+
+            if (opts.deploy_url) {
+                open(opts.deploy_url);
+            }
+
+            process.nextTick(function () {
+                defer.resolve(opts.deploy_url);
+            });
 
             return defer.promise;
         };
@@ -133,7 +150,8 @@ module.exports = function (grunt) {
             willSpawn('git',
                       ['push', '--force', '--quiet', remoteRepoPath, 'master:' + options.branch],
                       {cwd: localRepoPath},
-                      'Pushing changes to the remote deployment repository'.white + '...'.cyan)
+                      'Pushing changes to the remote deployment repository'.white + '...'.cyan),
+            openURL(options)
         ].reduce(function (prev, curFunc) {
             return prev.then(curFunc);
         }, new Q())
