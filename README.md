@@ -53,12 +53,12 @@ A commit message to include for the deployment
 Type: `String`
 Default value: `N/A`
 
-If set, the supplied URL will open in a browser window
+If set, the supplied URL will open in a browser window after the site is successfully deployed.
 
 ### Usage Examples
 
 #### Default Options
-In this example, the contents of the `dist` folder is deployed to the `gh-pages` branch of the remote repo `https://github.com/LonnyGomes/grunt-deploy-site.git`. A local reposiotry is created with in a folder named .production_site and after the site is deployed the URL will be opened up in a browser.
+In this example, the contents of the `dist` folder are deployed to the `gh-pages` branch of the remote repository `https://github.com/LonnyGomes/grunt-deploy-site.git`. A local reposiotry is created with in a folder named `.production_site` and after the site is deployed the URL will be opened up in a browser.
 
 ```js
 grunt.initConfig({
