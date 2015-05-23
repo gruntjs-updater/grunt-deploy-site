@@ -38,7 +38,10 @@ module.exports = function (grunt) {
                 opts: opts
             }, function (error, result, code) {
                 if (code !== 0) {
-                    defer.reject(error);
+                    defer.reject({
+                        msg: error,
+                        code: code
+                    });
                 } else {
                     defer.resolve(d);
                 }
@@ -70,6 +73,23 @@ module.exports = function (grunt) {
                     defer.resolve(d);
                 });
             }
+
+            return defer.promise;
+        };
+    }
+
+    function willCommit(repoPath, commit_msg) {
+        return function (d) {
+            var defer = Q.defer();
+            willSpawn('git',
+                      ['commit', '-m', commit_msg],
+                      {cwd: repoPath},
+                      'Committing changes '.white + '...'.cyan)()
+                .then(function () {
+                    defer.resolve(d);
+                }, function (err) {
+                    defer.reject(err);
+                });
 
             return defer.promise;
         };
@@ -143,10 +163,8 @@ module.exports = function (grunt) {
                       ['add', '-A'],
                       {cwd: localRepoPath},
                       'Adding files to deployment repo '.white + '...'.cyan),
-            willSpawn('git',
-                      ['commit', '-m', options.commit_msg],
-                      {cwd: localRepoPath},
-                      'Committing changes '.white + '...'.cyan),
+            willCommit(localRepoPath,
+                       options.commit_msg),
             willSpawn('git',
                       ['push', '--force', '--quiet', remoteRepoPath, 'master:' + options.branch],
                       {cwd: localRepoPath},
@@ -160,7 +178,8 @@ module.exports = function (grunt) {
                 grunt.log.writeln(success_msg.white.bold);
                 done();
             }.bind(this), function (err) {
-                grunt.fail.fatal(err);
+                var errMsg = (err) ? err.msg : 'An undefined error occured!';
+                grunt.fail.fatal(errMsg);
             }).done();
 
     });
