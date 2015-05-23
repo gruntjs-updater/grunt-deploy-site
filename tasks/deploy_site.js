@@ -88,7 +88,16 @@ module.exports = function (grunt) {
                 .then(function () {
                     defer.resolve(d);
                 }, function (err) {
-                    defer.reject(err);
+                    //an error code of 1 indicates there aren't any
+                    //files that changed
+                    if (err.code === 1) {
+                        defer.reject({
+                            msg: 'No changes detected, aborting commit!',
+                            code: err.code
+                        });
+                    } else {
+                        defer.reject(err);
+                    }
                 });
 
             return defer.promise;
