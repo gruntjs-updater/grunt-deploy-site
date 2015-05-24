@@ -15,6 +15,10 @@ var Q = require('q'),
 
 module.exports = function (grunt) {
 
+    var ErrorType = {
+        NO_COMMIT: 'noCommit'
+    };
+
     function willSpawn(cmd, args, opts, cmd_msg) {
         return function (d) {
             var defer = Q.defer(),
@@ -93,7 +97,8 @@ module.exports = function (grunt) {
                     if (err.code === 1) {
                         defer.reject({
                             msg: 'No changes detected, aborting commit!',
-                            code: err.code
+                            code: err.code,
+                            type: ErrorType.NO_COMMIT
                         });
                     } else {
                         defer.reject(err);
@@ -188,7 +193,13 @@ module.exports = function (grunt) {
                 done();
             }.bind(this), function (err) {
                 var errMsg = (err) ? err.msg : 'An undefined error occured!';
-                grunt.fail.fatal(errMsg);
+
+                if (err.type === ErrorType.NO_COMMIT) {
+                    grunt.fail.warn(errMsg);
+                } else {
+                    grunt.fail.fatal(errMsg);
+
+                }
             }).done();
 
     });
