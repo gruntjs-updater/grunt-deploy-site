@@ -77,6 +77,26 @@ module.exports = function (grunt) {
         // Unit tests.
         nodeunit: {
             tests: ['test/*_test.js']
+        },
+
+        // Grunt bump to manage version updates
+        bump: {
+            options: {
+                files: ['package.json'],
+                updateConfigs: [],
+                commit: true,
+                commitMessage: 'Release v%VERSION%',
+                commitFiles: ['package.json'],
+                createTag: true,
+                tagName: 'v%VERSION%',
+                tagMessage: 'Version %VERSION%',
+                push: true,
+                pushTo: 'upstream',
+                gitDescribeOptions: '--tags --always --abbrev=1 --dirty=-d',
+                globalReplace: false,
+                prereleaseName: false,
+                regExp: false
+            }
         }
 
     });
@@ -88,6 +108,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-nodeunit');
+    grunt.loadNpmTasks('grunt-bump');
 
     grunt.registerTask('clean_repos', 'Clear out repositories', function () {
         fs.removeSync('.staging_site');
