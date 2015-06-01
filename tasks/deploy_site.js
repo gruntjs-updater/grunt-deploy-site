@@ -22,7 +22,14 @@ module.exports = function (grunt) {
     function willSpawn(cmd, args, opts, cmd_msg) {
         return function (d) {
             var defer = Q.defer(),
-                msg = ['Running', cmd];
+                msg = ['Running', cmd],
+                is_verbose = false,
+                spawned_cmd;
+
+            //set verbose flag
+            if (opts && opts.verbose) {
+                is_verbose = opts.verbose;
+            }
 
             if (args) {
                 msg = msg.concat(args);
@@ -36,7 +43,7 @@ module.exports = function (grunt) {
             }
 
             //execute command
-            grunt.util.spawn({
+            spawned_cmd = grunt.util.spawn({
                 cmd: cmd,
                 args: args,
                 opts: opts
@@ -50,11 +57,21 @@ module.exports = function (grunt) {
                     defer.resolve(d);
                 }
             });
+
+            if (is_verbose) {
+                spawned_cmd.stdout.on('data', function (data) {
+                    grunt.log.write(data.toString('utf8').green);
+                });
+
+                spawned_cmd.stderr.on('data', function (data) {
+                    grunt.log.write(data.toString('utf8').red);
+                });
+            }
             return defer.promise;
         };
     }
 
-    function willInitRepo(repoPath) {
+    function willInitRepo(repoPath, opts) {
         return function (d) {
             var defer = Q.defer(),
                 relRepoPath,
@@ -65,7 +82,7 @@ module.exports = function (grunt) {
                 msg = "Initializing repository at ".cyan.bold + relRepoPath.magenta;
 
                 grunt.log.writeln(msg);
-                willSpawn('git', ['init', repoPath])()
+                willSpawn('git', ['init', repoPath], opts)()
                     .then(function () {
                         defer.resolve(d);
                     }, function (err) {
@@ -82,12 +99,17 @@ module.exports = function (grunt) {
         };
     }
 
-    function willCommit(repoPath, commit_msg) {
+    function willCommit(repoPath, commit_msg, opts) {
         return function (d) {
-            var defer = Q.defer();
+            var defer = Q.defer(),
+                options = opts || {};
+
+            //set current working dir option to path of repo
+            options.cwd = repoPath;
+
             willSpawn('git',
                       ['commit', '-m', commit_msg],
-                      {cwd: repoPath},
+                      options,
                       'Committing changes '.white + '...'.cyan)()
                 .then(function () {
                     defer.resolve(d);
@@ -132,7 +154,8 @@ module.exports = function (grunt) {
         // Merge task-specific and/or target-specific options with these defaults.
         var options = this.options({
                 branch: 'master',
-                commit_msg: 'deployment'
+                commit_msg: 'deployment',
+                verbose: false
             }),
             config = [this.name, this.target].join('.'),
             requiredParams = [
@@ -169,19 +192,20 @@ module.exports = function (grunt) {
 
         //execute commands
         return [
-            willInitRepo(localRepoPath),
+            willInitRepo(localRepoPath, {verbose: options.verbose}),
             willSpawn('git',
                       ['config', 'core.worktree', workTree],
-                      {cwd: localRepoPath}),
+                      {cwd: localRepoPath, verbose: options.verbose}),
             willSpawn('git',
                       ['add', '-A'],
-                      {cwd: localRepoPath},
+                      {cwd: localRepoPath, verbose: options.verbose},
                       'Adding files to deployment repo '.white + '...'.cyan),
             willCommit(localRepoPath,
-                       options.commit_msg),
+                       options.commit_msg,
+                      {verbose: options.verbose}),
             willSpawn('git',
-                      ['push', '--force', '--quiet', remoteRepoPath, 'master:' + options.branch],
-                      {cwd: localRepoPath},
+                      ['push', '--force', remoteRepoPath, 'master:' + options.branch],
+                      {cwd: localRepoPath, verbose: options.verbose},
                       'Pushing changes to the remote deployment repository'.white + '...'.cyan),
             openURL(options)
         ].reduce(function (prev, curFunc) {

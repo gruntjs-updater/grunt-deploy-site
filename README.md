@@ -64,6 +64,12 @@ Default value: `N/A`
 
 If set, the supplied URL will open in a browser window after the site is successfully deployed.
 
+#### options.verbose
+Type: `String`
+Default value: false
+
+Displays the output of git the commands used in the background when `verbose` is set to true
+
 ### Usage Examples
 
 #### Default Options

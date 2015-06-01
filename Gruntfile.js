@@ -68,7 +68,9 @@ module.exports = function (grunt) {
                 remote_url: 'test/fixtures/remotes/staging'
             },
             production: {
-                options: {},
+                options: {
+                    verbose: true
+                },
                 base_path: 'test/fixtures/production',
                 remote_url: 'test/fixtures/remotes/production'
             }
