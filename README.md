@@ -1,6 +1,6 @@
 # grunt-deploy-site
 
-> Grunt plugin that leverages git to deploy a web site
+> Grunt plugin that deploys files to a remote git repository
 
 ## Getting Started
 This plugin requires Grunt `~0.4.5`
@@ -20,6 +20,15 @@ grunt.loadNpmTasks('grunt-deploy-site');
 ## The "deploy_site" task
 
 ### Overview
+
+The `deploy-site` grunt package leverages git to copy a specified folder from within your project to a git repository.
+
+#### Use Case
+
+* managing a `gh-pages` site
+* deploying applications
+* continuous integration tasks
+
 In your project's Gruntfile, add a section named `deploy_site` to the data object passed into `grunt.initConfig()`.
 
 ```js
@@ -58,7 +67,7 @@ If set, the supplied URL will open in a browser window after the site is success
 ### Usage Examples
 
 #### Default Options
-In this example, the contents of the `dist` folder are deployed to the `gh-pages` branch of the remote repository `https://github.com/LonnyGomes/grunt-deploy-site.git`. A local reposiotry is created with in a folder named `.production_site` and after the site is deployed the URL will be opened up in a browser.
+In this example, the contents of the `dist` folder are deployed to the `gh-pages` branch of the remote repository `https://github.com/LonnyGomes/grunt-deploy-site.git`. A local reposiotry is created with in a folder named `.production_site` and after the site is deployed the URL _http://grunt-deploy-site.github.io_ will be opened up in a browser.
 
 ```js
 grunt.initConfig({
