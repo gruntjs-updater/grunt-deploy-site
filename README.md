@@ -21,9 +21,9 @@ grunt.loadNpmTasks('grunt-deploy-site');
 
 ### Overview
 
-The `deploy-site` grunt package leverages git to copy a specified folder from within your project to a git repository.
+The `deploy-site` grunt package leverages git to copy a specified folder from within your project to a separate git repository. The destination Git repository can live anywhere Git has access to whether it's a sibling directory or a remote repo via SSH.
 
-#### Use Case
+#### Use Cases
 
 * managing a `gh-pages` site
 * deploying applications
