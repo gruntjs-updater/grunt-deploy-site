@@ -1,6 +1,6 @@
 # grunt-deploy-site
 
-> Grunt plugin that deploys files to a remote git repository
+> Deploy the contents of a folder to a remote git repository
 
 ## Getting Started
 This plugin requires Grunt `~0.4.5`
@@ -21,12 +21,12 @@ grunt.loadNpmTasks('grunt-deploy-site');
 
 ### Overview
 
-The `deploy-site` grunt package leverages git to copy a specified folder from within your project to a separate git repository. The destination Git repository can live anywhere Git has access to whether it's a sibling directory or a remote repo via SSH.
+The `deploy-site` grunt package leverages git to copy a specified folder from within your project to a separate git repository. The destination Git repository can live anywhere Git has access to whether it's a sibling directory or a remote repository via SSH.
 
 #### Use Cases
 
-* managing a `gh-pages` site
-* deploying applications
+* managing a static site such as Git Hub Pages
+* deploying applications to production
 * continuous integration tasks
 
 In your project's Gruntfile, add a section named `deploy_site` to the data object passed into `grunt.initConfig()`.
@@ -43,6 +43,18 @@ grunt.initConfig({
   },
 });
 ```
+
+### Settings
+
+#### base_path
+Type: `String`
+
+This specifies the base path to push to the git remote git repository. For instance, specifying `dist` would make the `dist` folder the root of the remote repository.
+
+#### remote_url
+Type: `String`
+
+This defines the destination git URL that the contents of `base_path` will be deployed to. This parameter can point to a local path or any valid git URL.
 
 ### Options
 
@@ -96,4 +108,7 @@ grunt.initConfig({
 In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).
 
 ## Release History
-_(Nothing yet)_
+
+####v0.1.0
+
+* Initial release
