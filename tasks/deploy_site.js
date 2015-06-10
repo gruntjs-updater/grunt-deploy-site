@@ -60,11 +60,11 @@ module.exports = function (grunt) {
 
             if (is_verbose) {
                 spawned_cmd.stdout.on('data', function (data) {
-                    grunt.log.write(data.toString('utf8').green);
+                    grunt.log.write(data.toString('utf8').grey.bold);
                 });
 
                 spawned_cmd.stderr.on('data', function (data) {
-                    grunt.log.write(data.toString('utf8').red);
+                    grunt.log.write(data.toString('utf8').grey);
                 });
             }
             return defer.promise;
