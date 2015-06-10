@@ -79,7 +79,7 @@ module.exports = function (grunt) {
 
             if (!grunt.file.isDir(repoPath)) {
                 relRepoPath = path.basename(repoPath);
-                msg = "Initializing repository at ".cyan.bold + relRepoPath.magenta;
+                msg = "Initializing repository at ".cyan + relRepoPath.white;
 
                 grunt.log.writeln(msg);
                 willSpawn('git', ['init', repoPath], opts)()
@@ -110,7 +110,7 @@ module.exports = function (grunt) {
             willSpawn('git',
                       ['commit', '-m', commit_msg],
                       options,
-                      'Committing changes '.white + '...'.cyan)()
+                      'Committing changes '.cyan + '...'.white)()
                 .then(function () {
                     defer.resolve(d);
                 }, function (err) {
@@ -206,21 +206,21 @@ module.exports = function (grunt) {
             willSpawn('git',
                       ['add', '-A'],
                       {cwd: localRepoPath, verbose: options.verbose},
-                      'Adding files to deployment repo '.white + '...'.cyan),
+                      'Adding files to deployment repo '.cyan + '...'.white),
             willCommit(localRepoPath,
                        options.commit_msg,
                       {verbose: options.verbose}),
             willSpawn('git',
                       ['push', '--force', remoteRepoPath, 'master:' + options.branch],
                       {cwd: localRepoPath, verbose: options.verbose},
-                      'Pushing changes to the remote deployment repository'.white + '...'.cyan),
+                      'Pushing changes to the remote deployment repository '.cyan + '...'.white),
             openURL(options)
         ].reduce(function (prev, curFunc) {
             return prev.then(curFunc);
         }, new Q())
             .then(function (d) {
                 var success_msg = 'Successfully deployed ' + this.target + ' site';
-                grunt.log.writeln(success_msg.white.bold);
+                grunt.log.writeln(success_msg.white.bold.underline);
                 done();
             }.bind(this), function (err) {
                 var errMsg = (err) ? err.msg : 'An undefined error occured!';
