@@ -144,8 +144,9 @@ module.exports = function (grunt) {
                     }
                 });
             } else {
+                //if no url was supplied, resolve promise w/o a fuss
                 process.nextTick(function () {
-                    defer.reject({msg: 'deploy_url parameter not supplied!'});
+                    defer.resolve(true);
                 });
             }
 
