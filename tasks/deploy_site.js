@@ -136,12 +136,18 @@ module.exports = function (grunt) {
             var defer = Q.defer();
 
             if (opts.deploy_url) {
-                open(opts.deploy_url);
+                open(opts.deploy_url, null, function (err) {
+                    if (err) {
+                        defer.reject({msg: err});
+                    } else {
+                        defer.resolve(opts.deploy_url);
+                    }
+                });
+            } else {
+                process.nextTick(function () {
+                    defer.reject({msg: 'deploy_url parameter not supplied!'});
+                });
             }
-
-            process.nextTick(function () {
-                defer.resolve(opts.deploy_url);
-            });
 
             return defer.promise;
         };
