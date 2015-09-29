@@ -109,6 +109,10 @@ In lieu of a formal styleguide, take care to maintain the existing coding style.
 
 ## Release History
 
+####v0.1.2
+
+* allowed empty commits so a deploy can happen even if no changes were detected
+
 ####v0.1.1
 
 * fixed issue where the browser wouldn't always open the `deploy_url` site (#1)
