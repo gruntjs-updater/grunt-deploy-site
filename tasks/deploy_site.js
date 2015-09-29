@@ -15,10 +15,6 @@ var Q = require('q'),
 
 module.exports = function (grunt) {
 
-    var ErrorType = {
-        NO_COMMIT: 'noCommit'
-    };
-
     function willSpawn(cmd, args, opts, cmd_msg) {
         return function (d) {
             var defer = Q.defer(),
@@ -108,23 +104,13 @@ module.exports = function (grunt) {
             options.cwd = repoPath;
 
             willSpawn('git',
-                      ['commit', '-m', commit_msg],
+                      ['commit', '--allow-empty', '-m', commit_msg],
                       options,
                       'Committing changes '.cyan + '...'.white)()
                 .then(function () {
                     defer.resolve(d);
                 }, function (err) {
-                    //an error code of 1 indicates there aren't any
-                    //files that changed
-                    if (err.code === 1) {
-                        defer.reject({
-                            msg: 'No changes detected, aborting commit!',
-                            code: err.code,
-                            type: ErrorType.NO_COMMIT
-                        });
-                    } else {
-                        defer.reject(err);
-                    }
+                    defer.reject({msg: err});
                 });
 
             return defer.promise;
@@ -225,12 +211,7 @@ module.exports = function (grunt) {
             }.bind(this), function (err) {
                 var errMsg = (err) ? err.msg : 'An undefined error occured!';
 
-                if (err.type === ErrorType.NO_COMMIT) {
-                    grunt.fail.warn(errMsg);
-                } else {
-                    grunt.fail.fatal(errMsg);
-
-                }
+                grunt.fail.fatal(errMsg);
             }).done();
 
     });
