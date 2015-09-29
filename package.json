@@ -1,7 +1,7 @@
 {
   "name": "grunt-deploy-site",
   "description": "Grunt plugin that leverages git to deploy a web site",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "homepage": "https://github.com/lonnygomes/grunt-deploy-site",
   "author": {
     "name": "Lonny Gomes",
